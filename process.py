@@ -73,7 +73,8 @@ class Nodulegeneration(SegmentationAlgorithm):
                     height = y_max - y_min
 
                     # Generates the nodule
-                    node = generate_node(NODES_EXAMPLES_PATH, width, height, contrast_intensity=0.4,
+                    intensity = 0.1 + random.random() * 0.4
+                    node = generate_node(NODES_EXAMPLES_PATH, width, height, contrast_intensity=intensity,
                                          visualize=self.visualize)
                     if self.visualize:
                         visualise_bounding_box(cxr_img_scaled, x_min, y_min, width, height)
