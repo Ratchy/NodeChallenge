@@ -64,23 +64,27 @@ class Nodulegeneration(SegmentationAlgorithm):
             # Image preprocessing step
             cxr_img_scaled = preprocess_image(cxr_img_scaled)
             for nodule in nodule_data:
-                # Extract coordinates
-                boxes = nodule['corners']
-                y_min, x_min, y_max, x_max = boxes[2][0], boxes[2][1], boxes[0][0], boxes[0][1]
-                x_min, y_min, x_max, y_max = int(x_min), int(y_min), int(x_max), int(y_max)
-                width = x_max - x_min
-                height = y_max - y_min
+                try:
+                    # Extract coordinates
+                    boxes = nodule['corners']
+                    y_min, x_min, y_max, x_max = boxes[2][0], boxes[2][1], boxes[0][0], boxes[0][1]
+                    x_min, y_min, x_max, y_max = int(x_min), int(y_min), int(x_max), int(y_max)
+                    width = x_max - x_min
+                    height = y_max - y_min
 
-                # Generates the nodule
-                node = generate_node(NODES_EXAMPLES_PATH, width, height, contrast_intensity=0.4,
-                                     visualize=self.visualize)
-                if self.visualize:
-                    visualise_bounding_box(cxr_img_scaled, x_min, y_min, width, height)
+                    # Generates the nodule
+                    node = generate_node(NODES_EXAMPLES_PATH, width, height, contrast_intensity=0.4,
+                                         visualize=self.visualize)
+                    if self.visualize:
+                        visualise_bounding_box(cxr_img_scaled, x_min, y_min, width, height)
 
-                # Simulates the nodule at the specified coordinates
-                cxr_img_scaled = merge_node_and_image(cxr_img_scaled, node, x_min, y_min, width, height)
-                if self.visualize:
-                    visualise_bounding_box(cxr_img_scaled, x_min, y_min, width, height)
+                    # Simulates the nodule at the specified coordinates
+                    cxr_img_scaled = merge_node_and_image(cxr_img_scaled, node, x_min, y_min, width, height)
+                    if self.visualize:
+                        visualise_bounding_box(cxr_img_scaled, x_min, y_min, width, height)
+
+                except:
+                    continue
 
             cxr_img_scaled = inverse_preprocess_image(cxr_img_scaled)
             nodule_images[j, :, :] = cxr_img_scaled
